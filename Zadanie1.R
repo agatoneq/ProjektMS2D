@@ -25,8 +25,9 @@ miary_sz_szczegolowego <- function(dane)
   # Miary rozproszenia
   wariancja = var(szereg_sz)
   odchylenie_standardowe = sd(szereg_sz)
-  wariancja_nieobciazona = wariancja * (n/(n-1))
-  odchylenie_standardowe_NO = sqrt(wariancja_nieobciazona)
+  wariancja_es_nieobciazony = wariancja * (length(szereg_sz)/(length(szereg_sz)-1))
+  #odchylenie_standardowe_NO2 = sqrt(wariancja_es_nieobciazony)
+  odchylenie_standardowe_NO = odchylenie_standardowe * (length(szereg_sz)/(length(szereg_sz)-1))
   odchylenie_przecietne = sum(abs(szereg_sz - srednia)) / length(szereg_sz)
   odchylenie_przecietne_od_mediany = sum(abs(szereg_sz - mediana)) / length(szereg_sz)
   odchylenie_cwiartkowe = IQR(szereg_sz)/2
@@ -34,9 +35,11 @@ miary_sz_szczegolowego <- function(dane)
   pozycyjny_wspolczynnik_zmiennosci  =  100*odchylenie_cwiartkowe/mediana
   
   # Miary asymetrii i koncentracji
-  skosnosc = skewness(szereg_sz)
-  kurtoza =  kurtosis(szereg_sz)
+  skosnosc = (sum((szereg_sz - srednia) ^ 3) / length(szereg_sz)) / (odchylenie_standardowe ^ 3)
+  kurtoza = (sum((szereg_sz - srednia) ^ 4) / length(szereg_sz)) / (odchylenie_standardowe ^ 4)
   eksces = kurtoza - 3
+  
+  return(c(srednia, mediana, moda, Q1, Q3, wariancja, odchylenie_standardowe, wariancja_es_nieobciazony, odchylenie_standardowe_NO, odchylenie_przecietne, odchylenie_przecietne_od_mediany, odchylenie_cwiartkowe, wspolczynnik_zmiennosci, pozycyjny_wspolczynnik_zmiennosci, skosnosc, kurtoza, eksces))
 }
 
 
@@ -47,69 +50,22 @@ hist_salon2 <- hist(salon1, breaks = 8)
 
 
 #funkcja dla kwantyli w szeregu rozdzielczym
-kwantyl<-function(szereg_rozdz, q)
+kwantyl <- function(szereg_rozdz, q)
 {
-  kwantyl=0
   war_srodkowe <- szereg_rozdz$mids
   liczebnosc <- szereg_rozdz$counts
+  pozycja = sum(szereg_rozdz$counts) * q
   
-  l_skumulowana <- liczebnosc
-  for(i in 1:length(liczebnosc))
-  {
-    l_skumulowana[i] = sum(liczebnosc[1:i])
-  }
+  l_skumulowana <- cumsum(szereg_rozdz$counts)
+  indeks <- which(pozycja < l_skumulowana)[1]
   
+  dolna_granica = szereg_rozdz$breaks[indeks]
+  l_skum_poprzedniego = l_skumulowana[indeks-1]
+  liczebnoscp = szereg_rozdz$counts[indeks]
+  szerokosc = szereg_rozdz$breaks[indeks+1] - szereg_rozdz$breaks[indeks]
   
-  if (sum(liczebnosc) %% 2 == 0)
-  {
-    indeks1 <- floor(sum(liczebnosc) * q)+1
-    indeks2 <- floor(sum(liczebnosc) * q)+2
-    
-    koniec1 = 0
-    i1 = 1
-    while (koniec1 == 0)
-    {
-      if (l_skumulowana[i1] > indeks1)
-      {
-        kwantyl1 <- war_srodkowe[i1]
-        koniec1 = 1
-      }
-      else
-        i1 = i1 + 1
-    }
-    koniec2 = 0
-    i2 = 1
-    while (koniec2 == 0)
-    {
-      if (l_skumulowana[i2] > indeks2)
-      {
-        kwantyl2 <- war_srodkowe[i2]
-        koniec2 = 1
-      }
-      else
-        i2 = i2 + 1
-    }
-    kwantyl = (kwantyl1+kwantyl2)/2
-  }
-  
-  else
-  {
-    indeks <- floor(sum(liczebnosc) * q)+1
-    
-    koniec = 0
-    i = 1
-    while (koniec == 0)
-    {
-      if (l_skumulowana[i] > indeks)
-      {
-        kwantyl = war_srodkowe[i]
-        koniec = 1
-      }
-      else
-        i = i + 1
-    }
-  }
-  return (kwantyl)
+  kwantyl = dolna_granica + ((pozycja - l_skum_poprzedniego) * (szerokosc / liczebnoscp))
+   return (kwantyl)
 }
 
 
@@ -122,7 +78,7 @@ miary_sz_rozdzielczego <- function(dane)
   liczebnosc <- szereg_roz$counts
   
   # Miary przeciętne
-  srednia = weighted.mean(war_srodkowe, liczebnosc)
+  srednia = sum(liczebnosc * war_srodkowe) / sum(liczebnosc)
   mediana = kwantyl(szereg_roz,0.5)
   moda = war_srodkowe[which.max(liczebnosc)]
   Q1 = kwantyl(szereg_roz, 0.25)
@@ -131,8 +87,8 @@ miary_sz_rozdzielczego <- function(dane)
   # Miary rozproszenia
   wariancja = sum(((war_srodkowe-srednia) ^ 2) * liczebnosc) / sum(liczebnosc)
   odchylenie_standardowe = sqrt(wariancja)
-  wariancja_nieobciazona = wariancja * (n/(n-1))
-  odchylenie_standardowe_NO = sqrt(wariancja_nieobciazona)
+  wariancja_es_nieobciazony = wariancja * (sum(liczebnosc)/(sum(liczebnosc)-1))
+  odchylenie_standardowe_NO = odchylenie_standardowe * (sum(liczebnosc)/(sum(liczebnosc)-1))
   odchylenie_przecietne = sum(abs(war_srodkowe - srednia) * liczebnosc) / sum(liczebnosc)
   odchylenie_przecietne_od_mediany = sum(abs(war_srodkowe - mediana) * liczebnosc) / sum(liczebnosc)
   odchylenie_cwiartkowe = (Q1 - Q3) / 2
@@ -140,7 +96,9 @@ miary_sz_rozdzielczego <- function(dane)
   pozycyjny_wspolczynnik_zmiennosci = 100*odchylenie_cwiartkowe/mediana
   
   # Miary asymetrii i koncentracji
-  skosnosc = 3*(srednia - mediana) / odchylenie_standardowe
+  skosnosc = (sum((war_srodkowe - srednia) ^ 3 * liczebnosc) / sum(liczebnosc)) / (odchylenie_standardowe ^ 3)
   kurtoza = (sum((war_srodkowe - srednia) ^ 4 * liczebnosc) / sum(liczebnosc)) / (odchylenie_standardowe ^ 4)
   eksces = kurtoza - 3
+  
+  return(c(srednia, mediana, moda, Q1, Q3, wariancja, odchylenie_standardowe, wariancja_es_nieobciazony, odchylenie_standardowe_NO, odchylenie_przecietne, odchylenie_przecietne_od_mediany, odchylenie_cwiartkowe, wspolczynnik_zmiennosci, pozycyjny_wspolczynnik_zmiennosci, skosnosc, kurtoza, eksces))
 }
