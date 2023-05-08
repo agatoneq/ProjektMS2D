@@ -91,7 +91,7 @@ miary_sz_rozdzielczego <- function(dane)
   odchylenie_standardowe_NO = odchylenie_standardowe * (sum(liczebnosc)/(sum(liczebnosc)-1))
   odchylenie_przecietne = sum(abs(war_srodkowe - srednia) * liczebnosc) / sum(liczebnosc)
   odchylenie_przecietne_od_mediany = sum(abs(war_srodkowe - mediana) * liczebnosc) / sum(liczebnosc)
-  odchylenie_cwiartkowe = (Q1 - Q3) / 2
+  odchylenie_cwiartkowe = (Q3 - Q1) / 2
   wspolczynnik_zmiennosci = 100*odchylenie_standardowe/srednia
   pozycyjny_wspolczynnik_zmiennosci = 100*odchylenie_cwiartkowe/mediana
   
