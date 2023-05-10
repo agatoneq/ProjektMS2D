@@ -12,3 +12,5 @@ print(df2)
 
 plot(hist_salon1)
 plot(hist_salon2)
+
+zadanie4(salon2)
