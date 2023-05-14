@@ -7,7 +7,7 @@ sd_ <- function(x)
   return(odchylenie)
 }
 
-zad3 <- function(salon1)
+zadanie3 <- function(salon1)
 {
 v <- length(salon1) 
 

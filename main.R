@@ -16,8 +16,11 @@ plot(hist_salon2)
 test_K_L(salon1)
 test_K_L(salon2)
 
+#ZADANIE 3
+zadanie3(salon1)
+
 #ZADANIE 4
 zadanie4(salon2)
 
-#Zadanie 5
+#ZADANIE 5
 Zadanie5(salon1, salon2, 0.05)
