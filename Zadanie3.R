@@ -12,19 +12,19 @@ zadanie3 <- function(salon1)
 v <- length(salon1) 
 
 x_bar <- mean(salon1) 
-cat("wartość średnia",x_bar)
+cat("wartość średnia",x_bar, "\n")
 
 os<-sd_(salon1)
-cat("odchylenie standardowe",sd_(salon1))
+cat("odchylenie standardowe",sd_(salon1), "\n")
 
 lsw <- v-1
-cat("liczba stopni swobody ",lsw) 
+cat("liczba stopni swobody ",lsw, "\n") 
 
 t <- ((x_bar - 85)*sqrt(lsw)) / (os)
-cat("parametr t",t)
+cat("parametr t",t, "\n")
 
 wk <- qt(0.025, lsw)
-cat("wartość krytyczna",-wk)
+cat("wartość krytyczna",-wk, "\n")
 
 
 if(wk>t || -wk<t)   {
