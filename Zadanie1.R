@@ -1,15 +1,3 @@
-library(moments)
-
-salon1 <- c(102, 54, 98, 86, 110, 83, 119, 86, 90, 93, 110, 60, 75, 82, 90, 79, 100, 58, 108, 91, 67, 
-            77, 60, 99, 73, 96, 75, 92, 84, 80, 88, 65, 104, 109, 97, 90, 101, 91, 101, 90, 90, 66, 72, 
-            100, 107, 98, 102)
-
-salon2 <- c(133, 61, 66, 80, 50, 86, 86, 105, 82, 107, 93, 87, 94, 105, 62, 102, 70, 72, 122, 97, 99, 
-            123, 96, 111, 73, 60, 107, 112, 50, 108, 77, 73, 90, 115, 71, 77, 87, 64, 115, 105, 77, 
-            111, 77, 62, 84, 73, 94, 62, 125, 44, 102, 70, 62)
-
-#ZADANIE 1
-
 #MIARY WEDŁUG SZEREGU SZCZEGÓŁOWEGO
 miary_sz_szczegolowego <- function(dane)
 {
@@ -46,7 +34,7 @@ miary_sz_szczegolowego <- function(dane)
 # utworzenie histogramu dla salonu 1
 hist_salon1 <- hist(salon1, breaks = 8)
 # utworzenie histogramu dla salonu 2
-hist_salon2 <- hist(salon1, breaks = 8)
+hist_salon2 <- hist(salon2, breaks = 8)
 
 
 #funkcja dla kwantyli w szeregu rozdzielczym

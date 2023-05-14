@@ -1,4 +1,3 @@
-
 zadanie4<-function(salon2)
 {
   #dane
