@@ -18,3 +18,6 @@ test_K_L(salon2)
 
 #ZADANIE 4
 zadanie4(salon2)
+
+#Zadanie 5
+Zadanie5(salon1, salon2, 0.05)
